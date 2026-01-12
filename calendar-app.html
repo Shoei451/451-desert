@@ -33,7 +33,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
           </svg>
         </button>
-        <button id="logoutBtn" class="danger">ログアウト</button>
+        <button id="logoutBtn" class="danger">Log out</button>
       </div>
       
       <div class="controls">
@@ -46,10 +46,10 @@
         </div>
         <div class="row-action">
           <button id="addBtn" class="primary">＋ 予定を追加</button>
-          <button id="exportPdfBtn" class="primary">PDFエクスポート</button>
+          <button id="exportPdfBtn" class="primary">PDF Export</button>
         </div>
         <div class="row-export">
-          <button id="exportBtn" class="ghost">エクスポート</button>
+          <button id="exportBtn" class="ghost">Export</button>
           <label class="ghost" style="
           padding:12px 14px; 
           cursor:pointer; 
@@ -58,7 +58,7 @@
           display:inline-flex; 
           align-items:center; 
           min-height:48px;">
-            インポート
+            Import File
             <input type="file" id="importFile" accept="application/json" hidden>
           </label>
         </div>
@@ -266,6 +266,10 @@
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light')
     }
 
+    const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+    const monthSelect = $('#monthSelect')
+    const yearSelect = $('#yearSelect')
+
     // =====================================
     // Sync Status Management
     // =====================================
@@ -449,9 +453,7 @@
     // =====================================
     // Calendar Rendering
     // =====================================
-    const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-    const monthSelect = $('#monthSelect')
-    const yearSelect = $('#yearSelect')
+
 
     for (let m = 0; m < 12; m++) {
       const opt = document.createElement('option')
