@@ -1,0 +1,453 @@
+/* ===== Solarized Color Palette ===== */
+:root {
+    /* Solarized Light */
+    --base03: #002b36;
+    --base02: #073642;
+    --base01: #586e75;
+    --base00: #657b83;
+    --base0: #839496;
+    --base1: #93a1a1;
+    --base2: #eee8d5;
+    --base3: #fdf6e3;
+    
+    /* Accent colors */
+    --yellow: #b58900;
+    --orange: #cb4b16;
+    --red: #dc322f;
+    --magenta: #d33682;
+    --violet: #6c71c4;
+    --blue: #268bd2;
+    --cyan: #2aa198;
+    --green: #859900;
+    
+    /* Theme variables */
+    --theme: var(--base3);
+    --entry: var(--base2);
+    --primary: var(--base01);
+    --secondary: var(--base0);
+    --content: var(--base00);
+    --card-bg: var(--base2);
+    --accent: var(--yellow);
+    --accent-hover: var(--orange);
+    --shadow: rgba(0, 43, 54, 0.15);
+}
+
+body.dark {
+    /* Solarized Dark */
+    --theme: var(--base03);
+    --entry: var(--base02);
+    --primary: var(--base1);
+    --secondary: var(--base0);
+    --content: var(--base1);
+    --card-bg: var(--base02);
+    --accent: var(--orange);
+    --accent-hover: var(--yellow);
+    --shadow: rgba(0, 0, 0, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    line-height: 1.6;
+    background-color: var(--theme);
+    color: var(--content);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a { 
+    color: var(--accent); 
+    text-decoration: none; 
+    transition: color 0.3s;
+}
+
+a:hover { 
+    color: var(--accent-hover); 
+}
+
+/* ===== Auth Screen ===== */
+.auth-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--base02) 0%, var(--base01) 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: var(--theme);
+    border-radius: 8px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 8px 32px var(--shadow);
+    border: 1px solid var(--base1);
+}
+
+.auth-card h1 {
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 2rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.auth-card > p {
+    color: var(--secondary);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.error-message {
+    background: var(--red);
+    color: var(--base3);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid var(--base1);
+    border-radius: 4px;
+    background: var(--theme);
+    color: var(--content);
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: var(--base3);
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.auth-form button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.auth-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.auth-toggle {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--secondary);
+}
+
+.auth-toggle button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    margin-left: 5px;
+    font-family: inherit;
+}
+
+.auth-toggle button:hover {
+    color: var(--accent-hover);
+}
+
+/* ===== Main App ===== */
+.app {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.app.visible {
+    display: block;
+    opacity: 1;
+}
+
+/* ===== Header ===== */
+header {
+    background: linear-gradient(135deg, var(--base01) 0%, var(--base00) 100%);
+    color: var(--base3);
+    padding: 80px 20px 60px;
+    text-align: center;
+    border-radius: 0 0 8px 8px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 3px solid var(--accent);
+}
+
+header h1 { 
+    margin: 0 0 15px; 
+    font-size: 2.5rem; 
+    font-weight: 700;
+    color: var(--base3); 
+    position: relative;
+    z-index: 1;
+}
+
+header p { 
+    margin: 0; 
+    font-size: 1.1rem; 
+    color: var(--base2);
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== Theme Toggle & User Info ===== */
+.logo-switches {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user-info {
+    background: var(--theme);
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    padding: 8px 16px;
+    color: var(--primary);
+    font-size: 14px;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+#theme-toggle, #logoutBtn {
+    background: var(--theme);
+    border: 2px solid var(--accent);
+    padding: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px var(--shadow);
+    font-family: inherit;
+}
+
+#theme-toggle {
+    border-radius: 50%;
+}
+
+#logoutBtn {
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+#theme-toggle:hover, #logoutBtn:hover { 
+    background: var(--accent);
+    color: var(--base3);
+    transform: scale(1.05);
+}
+
+#moon, #sun { 
+    display: none; 
+    width: 24px; 
+    height: 24px; 
+    stroke: var(--primary); 
+}
+
+#theme-toggle:hover #moon,
+#theme-toggle:hover #sun {
+    stroke: var(--base3);
+}
+
+body.dark #sun { 
+    display: block; 
+    stroke: var(--accent); 
+}
+
+body.dark #moon { 
+    display: none; 
+}
+
+body:not(.dark) #moon { 
+    display: block; 
+}
+
+body:not(.dark) #sun { 
+    display: none; 
+}
+
+/* ===== Content ===== */
+.intro {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.intro h2 { 
+    font-size: 2rem; 
+    margin-bottom: 20px; 
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.intro p { 
+    font-size: 1.1rem; 
+    color: var(--secondary);
+    line-height: 1.8;
+}
+
+/* ===== Cards ===== */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 100px;
+    padding: 0 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 16px var(--shadow);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--base1);
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px var(--shadow);
+    border-color: var(--accent);
+    background: var(--base02);
+}
+
+.card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    transition: transform 0.3s;
+    display: inline-block;
+}
+
+.card:hover .card-icon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.card h3 { 
+    margin: 0 0 10px; 
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary); 
+    transition: color 0.3s;
+    position: relative;
+    z-index: 1;
+}
+
+.card p { 
+    font-size: 1rem; 
+    color: var(--secondary); 
+    transition: color 0.3s;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+.card:hover h3 {
+    color: var(--accent);
+}
+
+.card:hover p {
+    color: var(--base1);
+}
+
+/* Disabled cards */
+.card[style*="opacity: 0.5"] {
+    cursor: not-allowed;
+}
+
+.card[style*="opacity: 0.5"]:hover {
+    transform: none;
+    border-color: var(--base1);
+}
+
+/* ===== Footer ===== */
+footer { 
+    background: var(--entry);
+    padding: 50px 20px; 
+    text-align: center;
+    margin-top: 80px;
+    border-top: 3px solid var(--accent);
+}
+
+footer p {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+footer a { 
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+footer a:hover { 
+    color: var(--accent-hover);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    header h1 { 
+        font-size: 2rem; 
+    }
+    
+    .intro h2 { 
+        font-size: 1.5rem; 
+    }
+    
+    .cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .logo-switches {
+        flex-wrap: wrap;
+    }
+    
+    .auth-card {
+        padding: 30px 20px;
+    }
+}

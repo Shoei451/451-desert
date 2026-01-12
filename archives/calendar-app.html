@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="favicon.png" />
   <title>学生用カレンダー — Shoei451</title>
-  <link rel="stylesheet" href="calendar_app_styles.css" />
+  <link rel="stylesheet" href="calendar.css" />
 </head>
 
 <body>
@@ -920,16 +920,45 @@
       }
     }
 
-    $('#exportPdfBtn').onclick = () => {
+    $('#exportPdfBtn').onclick = async () => {
       const element = document.getElementById('calendar')
+      
+      // 現在のテーマ状態を保存
+      const wasDark = document.body.classList.contains('dark')
+      
+      // 一時的にライトモードに切り替え
+      if (wasDark) {
+        document.body.classList.remove('dark')
+      }
+      
+      // PDF出力用のクラスを追加（印刷用スタイル適用）
+      element.classList.add('pdf-export')
+      
+      // PDFレンダリングのために少し待機
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       const opt = {
-        margin: 0.5,
+        margin: [0.5, 0.75, 0.5, 0.75], // 上, 右, 下, 左（左右の余白を増やす）
         filename: `カレンダー_${state.year}_${state.month + 1}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { 
+          scale: 2,
+          logging: false,
+          letterRendering: true
+        },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
       }
-      html2pdf().set(opt).from(element).save()
+      
+      // PDF生成
+      await html2pdf().set(opt).from(element).save()
+      
+      // PDF出力用クラスを削除
+      element.classList.remove('pdf-export')
+      
+      // 元のテーマに戻す
+      if (wasDark) {
+        document.body.classList.add('dark')
+      }
     }
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
