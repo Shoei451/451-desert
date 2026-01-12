@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/favicon-solar.png" />
+<title>Under Construction — 451-Solarized</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+/* Additional styles for construction page */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.construction-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.construction-icon {
+    font-size: 8rem;
+    margin-bottom: 30px;
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    user-select: none;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+.construction-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.construction-message {
+    font-size: 1.2rem;
+    color: var(--secondary);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+}
+
+.construction-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.construction-button {
+    padding: 15px 35px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px var(--shadow);
+    border: 2px solid var(--accent);
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--base3);
+    border-color: var(--accent);
+}
+
+.btn-primary:hover {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px var(--shadow);
+}
+
+.progress-section {
+    margin-top: 40px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--secondary);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: var(--entry);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--green) 100%);
+    border-radius: 4px;
+    animation: progress 2s ease-out forwards;
+}
+
+@keyframes progress {
+    from {
+        width: 0;
+    }
+    to {
+        width: 35%;
+    }
+}
+
+.features {
+    margin-top: 60px;
+    text-align: left;
+    max-width: 600px;
+}
+
+.features h3 {
+    color: var(--accent);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: var(--entry);
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+    transition: all 0.3s;
+}
+
+.feature-item:hover {
+    transform: translateX(10px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.feature-icon {
+    font-size: 2rem;
+}
+
+.feature-text {
+    flex: 1;
+}
+
+.feature-text strong {
+    color: var(--primary);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.feature-text span {
+    color: var(--secondary);
+    font-size: 0.9rem;
+}
+
+footer {
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .construction-icon {
+        font-size: 5rem;
+    }
+    
+    .construction-title {
+        font-size: 2rem;
+    }
+    
+    .construction-message {
+        font-size: 1.1rem;
+    }
+    
+    .construction-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .construction-button {
+        width: 100%;
+    }
+    
+    .features {
+        padding: 0 10px;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<span class="logo-switches">
+    <button id="theme-toggle" title="テーマ切替">
+        <svg id="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+</span>
+
+<!-- Construction Container -->
+<div class="construction-container">
+    <div class="construction-icon">🚧</div>
+    <h1 class="construction-title">このページは現在制作中です</h1>
+    <p class="construction-message">
+        このページは開発中のため、まだ公開されていません。<br>
+        より良いコンテンツをお届けするため、鋭意制作中です。
+    </p>
+    
+    <div class="construction-actions">
+        <a href="index.html" class="construction-button btn-primary">
+            ホームに戻る
+        </a>
+    </div>
+    
+    <div class="progress-section">
+        <div class="progress-label">
+            <span>開発進捗</span>
+            <span id="progress-text">35%</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+    
+    <div class="features">
+        <h3>予定されている機能</h3>
+        <div class="feature-item">
+            <div class="feature-icon">✅</div>
+            <div class="feature-text">
+                <strong>基本設計</strong>
+                <span>コンセプトとUIデザインが完成しました</span>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🔄</div>
+            <div class="feature-text">
+                <strong>機能実装</strong>
+                <span>コア機能を開発中です</span>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">⏳</div>
+            <div class="feature-text">
+                <strong>テスト</strong>
+                <span>品質確認とバグ修正を予定</span>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🚀</div>
+            <div class="feature-text">
+                <strong>リリース</strong>
+                <span>近日公開予定です</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>Get in touch: <a href="mailto:okamotoshoei451@gmail.com">okamotoshoei451@gmail.com</a></p>
+</footer>
+
+<!-- Scripts -->
+<script src="js/theme-toggle.js"></script>
+<script>
+// Easter egg: change icon on click
+const constructionIcon = document.querySelector('.construction-icon');
+const icons = ['🚧', '⚙️', '🔧', '🏗️', '🛠️', '⚡', '🔨', '⚒️'];
+let iconIndex = 0;
+
+constructionIcon.addEventListener('click', () => {
+    iconIndex = (iconIndex + 1) % icons.length;
+    constructionIcon.textContent = icons[iconIndex];
+    
+    // Restart animation
+    constructionIcon.style.animation = 'none';
+    setTimeout(() => {
+        constructionIcon.style.animation = 'float 3s ease-in-out infinite';
+    }, 10);
+});
+</script>
+
+</body>
+</html>
