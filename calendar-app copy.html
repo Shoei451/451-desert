@@ -906,19 +906,73 @@
       }
     }
 
-// =====================================
-// PDF Export - Open Print Page
-// =====================================
-$('#exportPdfBtn').onclick = () => {
-  const params = new URLSearchParams({
-    year: state.year,
-    month: state.month,
-    course: state.filterCourse,
-    type: state.filterType
-  })
-  window.open(`calendar-print.html?${params.toString()}`, '_blank')
-}
-
+    // =====================================
+    // PDF Export - Final Fix (Ink-Saving White Background)
+    // =====================================
+    $('#exportPdfBtn').onclick = async () => {
+      const wasDark = document.body.classList.contains('dark')
+      
+      try {
+        // Force light mode
+        if (wasDark) {
+          document.body.classList.remove('dark')
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 300))
+        
+        const panel = document.querySelector('.panel')
+        
+        // 一時的に背景を完全な白に変更（インク節約）
+        const originalPanelBg = panel.style.backgroundColor
+        const originalBodyBg = document.body.style.backgroundColor
+        const cells = document.querySelectorAll('.cell')
+        const originalCellBgs = Array.from(cells).map(c => c.style.backgroundColor)
+        
+        panel.style.backgroundColor = '#ffffff'
+        document.body.style.backgroundColor = '#ffffff'
+        cells.forEach(cell => {
+          // heat クラスの背景色を削除して白に
+          if (cell.className.includes('heat-')) {
+            cell.style.backgroundColor = '#ffffff'
+          }
+        })
+        
+        const opt = {
+          margin: 10,
+          filename: `カレンダー_${state.year}_${state.month + 1}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { 
+            scale: 1.8,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          },
+          jsPDF: { 
+            unit: 'mm', 
+            format: 'a4', 
+            orientation: 'landscape'
+          }
+        }
+        
+        await html2pdf().set(opt).from(panel).save()
+        
+        // 背景色を元に戻す
+        panel.style.backgroundColor = originalPanelBg
+        document.body.style.backgroundColor = originalBodyBg
+        cells.forEach((cell, i) => {
+          cell.style.backgroundColor = originalCellBgs[i]
+        })
+        
+      } catch (error) {
+        console.error('PDF export failed:', error)
+        alert('PDF出力に失敗しました: ' + error.message)
+      } finally {
+        if (wasDark) {
+          document.body.classList.add('dark')
+        }
+      }
+    }
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
