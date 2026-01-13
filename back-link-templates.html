@@ -1,0 +1,93 @@
+<!-- ====================================== -->
+<!-- BACK-LINK TEMPLATES FOR SOLARIZED THEME -->
+<!-- ====================================== -->
+
+<!-- USAGE INSTRUCTIONS:
+1. Include the back-link.css in your page's <head>:
+   <link rel="stylesheet" href="css/back-link.css">
+
+2. Copy the desired template below and paste it where you want the back link to appear
+3. Update the href attribute to match your target page
+
+NOTE: If you're already using common.css, the default back-link style is already included.
+The back-link.css file provides additional style variations.
+-->
+
+<!-- ====================================== -->
+<!-- TEMPLATE 1: Default Button Style -->
+<!-- ====================================== -->
+<!-- Best for: Most pages, prominent navigation -->
+<a href="index.html" class="back-link">← ホームに戻る</a>
+
+<!-- English variation -->
+<a href="index.html" class="back-link">← Back to Home</a>
+
+<!-- Custom destination -->
+<a href="tools.html" class="back-link">← ツール一覧に戻る</a>
+
+
+<!-- ====================================== -->
+<!-- TEMPLATE 2: Minimal Outlined Style -->
+<!-- ====================================== -->
+<!-- Best for: Clean, minimal designs -->
+<a href="index.html" class="back-link-minimal">← ホームに戻る</a>
+
+
+<!-- ====================================== -->
+<!-- TEMPLATE 3: Text-Only Style -->
+<!-- ====================================== -->
+<!-- Best for: Subtle navigation, content-heavy pages -->
+<a href="index.html" class="back-link-text">ホームに戻る</a>
+
+<!-- Note: Arrow is auto-added with ::before pseudo-element -->
+
+
+<!-- ====================================== -->
+<!-- TEMPLATE 4: In Intro Section (Common Pattern) -->
+<!-- ====================================== -->
+<!-- This is the pattern you're already using in your template -->
+<section class="intro">
+    <a href="index.html" class="back-link">← ホームに戻る</a>
+    <h2>ページタイトル</h2>
+    <p>ページの説明文...</p>
+</section>
+
+
+<!-- ====================================== -->
+<!-- TEMPLATE 5: Multiple Navigation Links -->
+<!-- ====================================== -->
+<!-- For pages that need multiple back links -->
+<div style="margin-bottom: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
+    <a href="index.html" class="back-link-minimal">← ホーム</a>
+    <a href="tools.html" class="back-link-minimal">← ツール一覧</a>
+</div>
+
+
+<!-- ====================================== -->
+<!-- TEMPLATE 6: Breadcrumb Style -->
+<!-- ====================================== -->
+<nav style="margin: 20px 0; color: var(--secondary); font-size: 0.9rem;">
+    <a href="index.html" style="color: var(--accent);">ホーム</a>
+    <span style="margin: 0 8px; color: var(--primary);">→</span>
+    <a href="tools.html" style="color: var(--accent);">ツール</a>
+    <span style="margin: 0 8px; color: var(--primary);">→</span>
+    <span style="color: var(--primary);">現在のページ</span>
+</nav>
+
+
+<!-- ====================================== -->
+<!-- QUICK REFERENCE: Common Destinations -->
+<!-- ====================================== -->
+<!-- Copy and paste these as needed -->
+
+<!-- Home -->
+<a href="index.html" class="back-link">← ホームに戻る</a>
+
+<!-- Tools page -->
+<a href="tools.html" class="back-link">← ツール一覧に戻る</a>
+
+<!-- Calendar app -->
+<a href="calendar-app.html" class="back-link">← カレンダーに戻る</a>
+
+<!-- Previous page (JavaScript) -->
+<a href="#" class="back-link" onclick="history.back(); return false;">← 前のページに戻る</a>

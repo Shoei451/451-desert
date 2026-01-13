@@ -1,0 +1,81 @@
+/* ===== Back Link Component ===== */
+/* Simple, reusable back-link styles that work with Solarized theme */
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 30px;
+    padding: 12px 24px;
+    background: var(--accent);
+    color: var(--base3);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px var(--shadow);
+    text-decoration: none;
+}
+
+.back-link:hover {
+    transform: translateY(-2px);
+    background: var(--yellow);
+    color: var(--base03);
+    box-shadow: 0 6px 20px var(--shadow);
+}
+
+/* Alternative minimal style */
+.back-link-minimal {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.back-link-minimal:hover {
+    background: var(--accent);
+    color: var(--base3);
+    transform: translateX(-4px);
+}
+
+/* Text-only style */
+.back-link-text {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.back-link-text::before {
+    content: '← ';
+    margin-right: 4px;
+}
+
+.back-link-text:hover {
+    color: var(--yellow);
+    transform: translateX(-4px);
+}
+
+.back-link-text::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--accent);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.back-link-text:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}

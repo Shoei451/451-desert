@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/favicon-solar.png" />
+<title>Back-Link Templates Demo — 451-Solarized</title>
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/back-link.css">
+<style>
+/* Demo-specific styles */
+.demo-section {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 2px solid var(--base1);
+}
+
+.demo-section h3 {
+    color: var(--accent);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.demo-section p {
+    color: var(--secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.demo-preview {
+    padding: 20px;
+    background: var(--theme);
+    border-radius: 6px;
+    border: 1px solid var(--border, var(--base1));
+    margin-bottom: 15px;
+}
+
+.code-block {
+    background: var(--base02);
+    color: var(--base1);
+    padding: 15px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.code-block code {
+    color: var(--cyan);
+}
+
+body.dark .code-block {
+    background: var(--base03);
+    color: var(--base0);
+}
+
+.usage-note {
+    background: var(--yellow);
+    color: var(--base03);
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 20px 0;
+    font-size: 0.95rem;
+}
+
+body.dark .usage-note {
+    background: rgba(181, 137, 0, 0.2);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+}
+</style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<span class="logo-switches">
+    <button id="theme-toggle" title="テーマ切替">
+        <svg id="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </button>
+</span>
+
+<!-- Header -->
+<header>
+    <h1>Back-Link Templates</h1>
+    <p>Reusable navigation components for Solarized theme</p>
+</header>
+
+<!-- Introduction -->
+<section class="intro">
+    <a href="index.html" class="back-link">← ホームに戻る</a>
+    <h2>テンプレート使用ガイド</h2>
+    <p>このページでは、サイト内で使える様々な「戻るリンク」のスタイルを紹介します。<br>
+    コードをコピーして、あなたのページに貼り付けるだけで使えます。</p>
+</section>
+
+<div class="usage-note">
+    <strong>💡 使い方：</strong> 各スタイルのプレビュー下にあるコードをコピーして、HTMLファイルに貼り付けてください。<br>
+    <code>href</code> 属性を編集してリンク先を変更できます。
+</div>
+
+<!-- Demo Sections -->
+<div class="demo-section">
+    <h3>1. Default Button Style (デフォルトボタン)</h3>
+    <p><strong>用途：</strong> ほとんどのページに適した標準スタイル。目立つナビゲーションが必要な場合に最適。</p>
+    
+    <div class="demo-preview">
+        <a href="index.html" class="back-link">← ホームに戻る</a>
+    </div>
+    
+    <div class="code-block"><code>&lt;a href="index.html" class="back-link"&gt;← ホームに戻る&lt;/a&gt;</code></div>
+</div>
+
+<div class="demo-section">
+    <h3>2. Minimal Outlined Style (ミニマル枠線)</h3>
+    <p><strong>用途：</strong> クリーンでミニマルなデザイン。控えめなナビゲーションが好ましい場合に。</p>
+    
+    <div class="demo-preview">
+        <a href="index.html" class="back-link-minimal">← ホームに戻る</a>
+    </div>
+    
+    <div class="code-block"><code>&lt;a href="index.html" class="back-link-minimal"&gt;← ホームに戻る&lt;/a&gt;</code></div>
+</div>
+
+<div class="demo-section">
+    <h3>3. Text-Only Style (テキストのみ)</h3>
+    <p><strong>用途：</strong> 控えめなナビゲーション。コンテンツ重視のページに適しています。</p>
+    
+    <div class="demo-preview">
+        <a href="index.html" class="back-link-text">ホームに戻る</a>
+    </div>
+    
+    <div class="code-block"><code>&lt;a href="index.html" class="back-link-text"&gt;ホームに戻る&lt;/a&gt;</code></div>
+    
+    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--secondary);">
+        <strong>Note:</strong> 矢印 (←) は自動的に追加されます。テキストだけを書いてください。
+    </p>
+</div>
+
+<div class="demo-section">
+    <h3>4. In Intro Section Pattern (Introセクション内)</h3>
+    <p><strong>用途：</strong> 既存のテンプレートで使用されている標準パターン。</p>
+    
+    <div class="demo-preview">
+        <section class="intro" style="margin: 0; padding: 20px 0;">
+            <a href="index.html" class="back-link">← ホームに戻る</a>
+            <h2 style="margin-top: 20px; color: var(--accent);">ページタイトル</h2>
+            <p>ページの説明文がここに入ります...</p>
+        </section>
+    </div>
+    
+    <div class="code-block"><code>&lt;section class="intro"&gt;
+    &lt;a href="index.html" class="back-link"&gt;← ホームに戻る&lt;/a&gt;
+    &lt;h2&gt;ページタイトル&lt;/h2&gt;
+    &lt;p&gt;ページの説明文...&lt;/p&gt;
+&lt;/section&gt;</code></div>
+</div>
+
+<div class="demo-section">
+    <h3>5. Multiple Links (複数リンク)</h3>
+    <p><strong>用途：</strong> 複数の戻り先が必要なページ。</p>
+    
+    <div class="demo-preview">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <a href="index.html" class="back-link-minimal">← ホーム</a>
+            <a href="tools.html" class="back-link-minimal">← ツール一覧</a>
+            <a href="calendar-app.html" class="back-link-minimal">← カレンダー</a>
+        </div>
+    </div>
+    
+    <div class="code-block"><code>&lt;div style="display: flex; gap: 15px; flex-wrap: wrap;"&gt;
+    &lt;a href="index.html" class="back-link-minimal"&gt;← ホーム&lt;/a&gt;
+    &lt;a href="tools.html" class="back-link-minimal"&gt;← ツール一覧&lt;/a&gt;
+&lt;/div&gt;</code></div>
+</div>
+
+<div class="demo-section">
+    <h3>6. Breadcrumb Navigation (パンくずリスト)</h3>
+    <p><strong>用途：</strong> 階層的なナビゲーション。ユーザーが現在地を把握しやすくなります。</p>
+    
+    <div class="demo-preview">
+        <nav style="color: var(--secondary); font-size: 0.9rem;">
+            <a href="index.html" style="color: var(--accent);">ホーム</a>
+            <span style="margin: 0 8px; color: var(--primary);">→</span>
+            <a href="tools.html" style="color: var(--accent);">ツール</a>
+            <span style="margin: 0 8px; color: var(--primary);">→</span>
+            <span style="color: var(--primary);">現在のページ</span>
+        </nav>
+    </div>
+    
+    <div class="code-block"><code>&lt;nav style="color: var(--secondary); font-size: 0.9rem;"&gt;
+    &lt;a href="index.html" style="color: var(--accent);"&gt;ホーム&lt;/a&gt;
+    &lt;span style="margin: 0 8px;"&gt;→&lt;/span&gt;
+    &lt;a href="tools.html" style="color: var(--accent);"&gt;ツール&lt;/a&gt;
+    &lt;span style="margin: 0 8px;"&gt;→&lt;/span&gt;
+    &lt;span style="color: var(--primary);"&gt;現在のページ&lt;/span&gt;
+&lt;/nav&gt;</code></div>
+</div>
+
+<div class="demo-section">
+    <h3>7. Browser Back Button (ブラウザの戻るボタン)</h3>
+    <p><strong>用途：</strong> JavaScriptでブラウザの履歴を使って戻る場合。</p>
+    
+    <div class="demo-preview">
+        <a href="#" class="back-link" onclick="alert('通常は前のページに戻ります'); return false;">← 前のページに戻る</a>
+    </div>
+    
+    <div class="code-block"><code>&lt;a href="#" class="back-link" onclick="history.back(); return false;"&gt;
+    ← 前のページに戻る
+&lt;/a&gt;</code></div>
+</div>
+
+<!-- Quick Reference -->
+<section class="intro" style="margin-top: 60px;">
+    <h2>クイックリファレンス</h2>
+    <p>よく使う戻り先のコード集</p>
+</section>
+
+<div class="demo-section">
+    <h3>Common Destinations</h3>
+    
+    <div style="display: grid; gap: 15px;">
+        <div>
+            <strong style="color: var(--accent);">ホームページ：</strong>
+            <div class="code-block" style="margin-top: 8px;"><code>&lt;a href="index.html" class="back-link"&gt;← ホームに戻る&lt;/a&gt;</code></div>
+        </div>
+        
+        <div>
+            <strong style="color: var(--accent);">ツール一覧：</strong>
+            <div class="code-block" style="margin-top: 8px;"><code>&lt;a href="tools.html" class="back-link"&gt;← ツール一覧に戻る&lt;/a&gt;</code></div>
+        </div>
+        
+        <div>
+            <strong style="color: var(--accent);">カレンダーアプリ：</strong>
+            <div class="code-block" style="margin-top: 8px;"><code>&lt;a href="calendar-app.html" class="back-link"&gt;← カレンダーに戻る&lt;/a&gt;</code></div>
+        </div>
+    </div>
+</div>
+
+<!-- Setup Instructions -->
+<section class="intro" style="margin-top: 60px;">
+    <h2>セットアップ方法</h2>
+</section>
+
+<div class="demo-section">
+    <h3>Step 1: CSSファイルを読み込む</h3>
+    <p>HTMLファイルの <code>&lt;head&gt;</code> セクションに以下を追加：</p>
+    <div class="code-block"><code>&lt;link rel="stylesheet" href="css/common.css"&gt;
+&lt;link rel="stylesheet" href="css/back-link.css"&gt;</code></div>
+    
+    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--secondary);">
+        <strong>Note:</strong> <code>common.css</code> だけでもデフォルトスタイルは使えますが、
+        <code>back-link.css</code> を追加すると、より多くのスタイルバリエーションが使えます。
+    </p>
+</div>
+
+<div class="demo-section">
+    <h3>Step 2: HTMLコードをコピー＆ペースト</h3>
+    <p>上のテンプレートから好きなスタイルのコードをコピーして、あなたのページに貼り付けてください。</p>
+</div>
+
+<div class="demo-section">
+    <h3>Step 3: リンク先を編集</h3>
+    <p><code>href="index.html"</code> の部分を、あなたの目的のページに変更してください。</p>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>Get in touch: <a href="mailto:okamotoshoei451@gmail.com">okamotoshoei451@gmail.com</a></p>
+</footer>
+
+<!-- Scripts -->
+<script src="js/theme-toggle.js"></script>
+
+</body>
+</html>
