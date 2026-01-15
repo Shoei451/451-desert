@@ -1,0 +1,935 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/favicon-solar.png" />
+<title>Sudoku Cracker — 451-Solarized</title>
+<style>
+/* ===== Solarized Color Palette ===== */
+:root {
+    /* Solarized Light */
+    --base03: #002b36;
+    --base02: #073642;
+    --base01: #586e75;
+    --base00: #657b83;
+    --base0: #839496;
+    --base1: #93a1a1;
+    --base2: #eee8d5;
+    --base3: #fdf6e3;
+    
+    /* Accent colors */
+    --yellow: #b58900;
+    --orange: #cb4b16;
+    --red: #dc322f;
+    --magenta: #d33682;
+    --violet: #6c71c4;
+    --blue: #268bd2;
+    --cyan: #2aa198;
+    --green: #859900;
+    
+    /* Theme variables */
+    --theme: var(--base3);
+    --panel: var(--base2);
+    --text: var(--base00);
+    --text-secondary: var(--base0);
+    --border: var(--base1);
+    --brand: var(--blue);
+    --danger: var(--red);
+    --warn: var(--orange);
+    --success: var(--green);
+}
+
+body.dark {
+    /* Solarized Dark */
+    --theme: var(--base03);
+    --panel: var(--base02);
+    --text: var(--base1);
+    --text-secondary: var(--base0);
+    --border: var(--base01);
+    --brand: var(--cyan);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background: var(--theme);
+    color: var(--text);
+    transition: background-color 0.3s, color 0.3s;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===== Header ===== */
+header {
+    background: var(--panel);
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border: 2px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.logo {
+    font-size: 2.5rem;
+}
+
+.brand h1 {
+    font-size: 1.8rem;
+    color: var(--brand);
+    margin: 0;
+}
+
+.brand .hint {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+#theme-toggle {
+    border-radius: 50%;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--panel);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#theme-toggle:hover {
+    background: var(--brand);
+    border-color: var(--brand);
+}
+
+#theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text);
+}
+
+#theme-toggle:hover svg {
+    stroke: var(--base3);
+}
+
+#moon, #sun {
+    display: none;
+}
+
+body.dark #sun {
+    display: block;
+}
+
+body:not(.dark) #moon {
+    display: block;
+}
+
+/* ===== Main Grid ===== */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.panel {
+    background: var(--panel);
+    border-radius: 8px;
+    padding: 24px;
+    border: 2px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.panel-header strong {
+    font-size: 1.3rem;
+    color: var(--brand);
+}
+
+.panel-header .hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* ===== Sudoku Grid ===== */
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 0;
+    border: 3px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 540px;
+    margin: 0 auto 20px;
+}
+
+.sudoku-cell {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background: var(--theme);
+    position: relative;
+}
+
+/* 3x3 block borders */
+.sudoku-cell:nth-child(3n) {
+    border-right: 2px solid var(--border);
+}
+
+.sudoku-cell:nth-child(n+19):nth-child(-n+27),
+.sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 2px solid var(--border);
+}
+
+.sudoku-cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: inherit;
+}
+
+.sudoku-cell input:focus {
+    outline: none;
+    background: var(--brand);
+    color: var(--base3);
+}
+
+.sudoku-cell.initial input {
+    color: var(--brand);
+    font-weight: 900;
+}
+
+.sudoku-cell.solved input {
+    color: var(--green);
+}
+
+.sudoku-cell.error {
+    background: rgba(220, 50, 47, 0.2);
+}
+
+.sudoku-cell.error input {
+    color: var(--danger);
+}
+
+/* Candidates display */
+.candidates {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    pointer-events: none;
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.candidates span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Controls ===== */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 16px;
+    border: 2px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+button:hover {
+    background: var(--brand);
+    color: var(--base3);
+    border-color: var(--brand);
+}
+
+button.primary {
+    background: var(--brand);
+    color: var(--base3);
+    border-color: var(--brand);
+}
+
+button.primary:hover {
+    background: var(--blue);
+}
+
+button.danger {
+    background: var(--danger);
+    color: var(--base3);
+    border-color: var(--danger);
+}
+
+button.warn {
+    background: var(--warn);
+    color: var(--base3);
+    border-color: var(--warn);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== Log Panel ===== */
+#solveLog {
+    max-height: 600px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+}
+
+.log-entry {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background: var(--theme);
+    border-left: 3px solid var(--border);
+}
+
+.log-entry.info {
+    border-left-color: var(--brand);
+}
+
+.log-entry.success {
+    border-left-color: var(--green);
+}
+
+.log-entry.warning {
+    border-left-color: var(--warn);
+}
+
+.log-entry.error {
+    border-left-color: var(--danger);
+}
+
+.log-step {
+    font-weight: 600;
+    color: var(--brand);
+    margin-bottom: 4px;
+}
+
+.log-detail {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* ===== Stats ===== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--theme);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-card .lbl {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.stat-card .num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--brand);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sudoku-grid {
+        max-width: 100%;
+    }
+    
+    .sudoku-cell input {
+        font-size: 1.2rem;
+    }
+    
+    .candidates {
+        font-size: 0.4rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div class="brand">
+                <div class="logo">🧩</div>
+                <div>
+                    <h1>Sudoku Cracker</h1>
+                    <div class="hint">数独ソルバー with ステップ表示</div>
+                </div>
+            </div>
+            <button id="theme-toggle" title="テーマ切替">
+                <svg id="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg id="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-grid">
+        <!-- Left Panel: Sudoku Grid -->
+        <div class="panel">
+            <div class="panel-header">
+                <strong>数独グリッド</strong>
+                <div class="hint">初期値を入力してください（1-9）</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="lbl">入力済み</div>
+                    <div id="statFilled" class="num">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lbl">確定済み</div>
+                    <div id="statSolved" class="num">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lbl">残り</div>
+                    <div id="statRemaining" class="num">81</div>
+                </div>
+            </div>
+
+            <div class="sudoku-grid" id="sudokuGrid">
+                <!-- Generated by JavaScript -->
+            </div>
+
+            <div class="controls">
+                <button id="solveBtn" class="primary">🚀 Solve</button>
+                <button id="stepBtn">➡️ Step</button>
+                <button id="showCandidatesBtn">👁️ Show Candidates</button>
+                <button id="clearBtn" class="warn">🗑️ Clear</button>
+                <button id="exampleBtn">📝 Load Example</button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Log & Analysis -->
+        <div class="panel">
+            <div class="panel-header">
+                <strong>解決ログ</strong>
+                <div class="hint">処理ステップをリアルタイム表示</div>
+            </div>
+
+            <div id="solveLog">
+                <div class="log-entry info">
+                    <div class="log-step">待機中...</div>
+                    <div class="log-detail">初期値を入力して「Solve」をクリックしてください</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== State Management =====
+const state = {
+    grid: Array(81).fill(null),
+    initial: Array(81).fill(false),
+    candidates: Array(81).fill(null).map(() => [1,2,3,4,5,6,7,8,9]),
+    showCandidates: false
+};
+
+// ===== Utility Functions =====
+function getRow(idx) { return Math.floor(idx / 9); }
+function getCol(idx) { return idx % 9; }
+function getBlock(idx) {
+    const row = getRow(idx);
+    const col = getCol(idx);
+    return Math.floor(row / 3) * 3 + Math.floor(col / 3);
+}
+
+function getRelatedIndices(idx) {
+    const row = getRow(idx);
+    const col = getCol(idx);
+    const block = getBlock(idx);
+    
+    const related = new Set();
+    
+    // Same row
+    for (let c = 0; c < 9; c++) {
+        related.add(row * 9 + c);
+    }
+    
+    // Same column
+    for (let r = 0; r < 9; r++) {
+        related.add(r * 9 + col);
+    }
+    
+    // Same 3x3 block
+    const blockRow = Math.floor(row / 3) * 3;
+    const blockCol = Math.floor(col / 3) * 3;
+    for (let r = blockRow; r < blockRow + 3; r++) {
+        for (let c = blockCol; c < blockCol + 3; c++) {
+            related.add(r * 9 + c);
+        }
+    }
+    
+    related.delete(idx); // Remove self
+    return Array.from(related);
+}
+
+function log(message, type = 'info', detail = '') {
+    const logEl = document.getElementById('solveLog');
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${type}`;
+    entry.innerHTML = `
+        <div class="log-step">${message}</div>
+        ${detail ? `<div class="log-detail">${detail}</div>` : ''}
+    `;
+    logEl.appendChild(entry);
+    logEl.scrollTop = logEl.scrollHeight;
+}
+
+function clearLog() {
+    document.getElementById('solveLog').innerHTML = '';
+}
+
+function updateStats() {
+    const filled = state.grid.filter(v => v !== null).length;
+    const solved = filled;
+    const remaining = 81 - filled;
+    
+    document.getElementById('statFilled').textContent = filled;
+    document.getElementById('statSolved').textContent = solved;
+    document.getElementById('statRemaining').textContent = remaining;
+}
+
+// ===== Grid Rendering =====
+function renderGrid() {
+    const gridEl = document.getElementById('sudokuGrid');
+    gridEl.innerHTML = '';
+    
+    for (let i = 0; i < 81; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'sudoku-cell';
+        
+        if (state.initial[i]) {
+            cell.classList.add('initial');
+        } else if (state.grid[i] !== null) {
+            cell.classList.add('solved');
+        }
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.maxLength = 1;
+        input.value = state.grid[i] || '';
+        input.dataset.index = i;
+        
+        if (state.initial[i]) {
+            input.readOnly = true;
+        }
+        
+        input.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val === '') {
+                state.grid[i] = null;
+                state.initial[i] = false;
+            } else if (/^[1-9]$/.test(val)) {
+                state.grid[i] = parseInt(val);
+                state.initial[i] = true;
+            } else {
+                e.target.value = '';
+            }
+            updateStats();
+        });
+        
+        cell.appendChild(input);
+        
+        // Candidates display
+        if (state.showCandidates && state.grid[i] === null) {
+            const candidatesEl = document.createElement('div');
+            candidatesEl.className = 'candidates';
+            for (let n = 1; n <= 9; n++) {
+                const span = document.createElement('span');
+                if (state.candidates[i].includes(n)) {
+                    span.textContent = n;
+                }
+                candidatesEl.appendChild(span);
+            }
+            cell.appendChild(candidatesEl);
+        }
+        
+        gridEl.appendChild(cell);
+    }
+    
+    updateStats();
+}
+
+// ===== Solving Logic =====
+function initializeCandidates() {
+    log('候補の初期化', 'info', '空きマスに[1-9]を設定');
+    
+    for (let i = 0; i < 81; i++) {
+        if (state.grid[i] === null) {
+            state.candidates[i] = [1,2,3,4,5,6,7,8,9];
+        } else {
+            state.candidates[i] = [];
+        }
+    }
+}
+
+function eliminateCandidates() {
+    let changed = false;
+    
+    for (let i = 0; i < 81; i++) {
+        if (state.grid[i] !== null) {
+            const value = state.grid[i];
+            const related = getRelatedIndices(i);
+            
+            for (const relIdx of related) {
+                if (state.grid[relIdx] === null) {
+                    const before = state.candidates[relIdx].length;
+                    state.candidates[relIdx] = state.candidates[relIdx].filter(c => c !== value);
+                    const after = state.candidates[relIdx].length;
+                    
+                    if (before !== after) {
+                        changed = true;
+                        log(
+                            `候補削除: (${getRow(relIdx)},${getCol(relIdx)})`,
+                            'info',
+                            `値${value}を削除 (同じ行/列/ブロックに${value}が存在)`
+                        );
+                    }
+                    
+                    // Check for contradiction
+                    if (state.candidates[relIdx].length === 0) {
+                        log(
+                            `❌ エラー: (${getRow(relIdx)},${getCol(relIdx)})`,
+                            'error',
+                            '候補が空になりました。矛盾が発生しています。'
+                        );
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    
+    return changed;
+}
+
+function findNakedSingles() {
+    let found = false;
+    
+    for (let i = 0; i < 81; i++) {
+        if (state.grid[i] === null && state.candidates[i].length === 1) {
+            const value = state.candidates[i][0];
+            state.grid[i] = value;
+            state.candidates[i] = [];
+            found = true;
+            
+            log(
+                `✅ Naked Single: (${getRow(i)},${getCol(i)}) = ${value}`,
+                'success',
+                '候補が1つだけなので確定'
+            );
+        }
+    }
+    
+    return found;
+}
+
+function findHiddenSingles() {
+    let found = false;
+    
+    // Check rows
+    for (let row = 0; row < 9; row++) {
+        for (let num = 1; num <= 9; num++) {
+            const possibleCells = [];
+            for (let col = 0; col < 9; col++) {
+                const idx = row * 9 + col;
+                if (state.grid[idx] === null && state.candidates[idx].includes(num)) {
+                    possibleCells.push(idx);
+                }
+            }
+            
+            if (possibleCells.length === 1) {
+                const idx = possibleCells[0];
+                state.grid[idx] = num;
+                state.candidates[idx] = [];
+                found = true;
+                
+                log(
+                    `✅ Hidden Single (Row): (${getRow(idx)},${getCol(idx)}) = ${num}`,
+                    'success',
+                    `行${row}で${num}はこのマスにしか入らない`
+                );
+            }
+        }
+    }
+    
+    // Check columns
+    for (let col = 0; col < 9; col++) {
+        for (let num = 1; num <= 9; num++) {
+            const possibleCells = [];
+            for (let row = 0; row < 9; row++) {
+                const idx = row * 9 + col;
+                if (state.grid[idx] === null && state.candidates[idx].includes(num)) {
+                    possibleCells.push(idx);
+                }
+            }
+            
+            if (possibleCells.length === 1) {
+                const idx = possibleCells[0];
+                state.grid[idx] = num;
+                state.candidates[idx] = [];
+                found = true;
+                
+                log(
+                    `✅ Hidden Single (Col): (${getRow(idx)},${getCol(idx)}) = ${num}`,
+                    'success',
+                    `列${col}で${num}はこのマスにしか入らない`
+                );
+            }
+        }
+    }
+    
+    // Check blocks
+    for (let block = 0; block < 9; block++) {
+        const blockRow = Math.floor(block / 3) * 3;
+        const blockCol = (block % 3) * 3;
+        
+        for (let num = 1; num <= 9; num++) {
+            const possibleCells = [];
+            for (let r = blockRow; r < blockRow + 3; r++) {
+                for (let c = blockCol; c < blockCol + 3; c++) {
+                    const idx = r * 9 + c;
+                    if (state.grid[idx] === null && state.candidates[idx].includes(num)) {
+                        possibleCells.push(idx);
+                    }
+                }
+            }
+            
+            if (possibleCells.length === 1) {
+                const idx = possibleCells[0];
+                state.grid[idx] = num;
+                state.candidates[idx] = [];
+                found = true;
+                
+                log(
+                    `✅ Hidden Single (Block): (${getRow(idx)},${getCol(idx)}) = ${num}`,
+                    'success',
+                    `ブロック${block}で${num}はこのマスにしか入らない`
+                );
+            }
+        }
+    }
+    
+    return found;
+}
+
+function solveStep() {
+    // Eliminate candidates based on confirmed values
+    const eliminated = eliminateCandidates();
+    if (eliminated === false) return false; // Error detected
+    
+    // Find naked singles
+    const nakedFound = findNakedSingles();
+    
+    // Find hidden singles
+    const hiddenFound = findHiddenSingles();
+    
+    return eliminated || nakedFound || hiddenFound;
+}
+
+function solveSudoku() {
+    clearLog();
+    log('🚀 解決開始', 'info', '初期値を検証中...');
+    
+    // Validate initial state
+    for (let i = 0; i < 81; i++) {
+        if (state.grid[i] !== null) {
+            const value = state.grid[i];
+            const related = getRelatedIndices(i);
+            
+            for (const relIdx of related) {
+                if (state.grid[relIdx] === value) {
+                    log(
+                        '❌ 初期値エラー',
+                        'error',
+                        `(${getRow(i)},${getCol(i)})と(${getRow(relIdx)},${getCol(relIdx)})が同じ値${value}を持っています`
+                    );
+                    return;
+                }
+            }
+        }
+    }
+    
+    initializeCandidates();
+    
+    let iteration = 0;
+    const maxIterations = 100;
+    
+    while (iteration < maxIterations) {
+        iteration++;
+        log(`--- Iteration ${iteration} ---`, 'info');
+        
+        const changed = solveStep();
+        
+        if (changed === false) {
+            // Error detected
+            break;
+        }
+        
+        renderGrid();
+        
+        if (!changed) {
+            // No more progress with basic techniques
+            log('⚠️ 基本テクニックで解決不可', 'warning', 'より高度な手法が必要です');
+            break;
+        }
+        
+        // Check if solved
+        if (state.grid.every(v => v !== null)) {
+            log('🎉 完成！', 'success', '数独が解けました！');
+            break;
+        }
+    }
+    
+    if (iteration >= maxIterations) {
+        log('⚠️ 最大反復回数に到達', 'warning', 'これ以上進めません');
+    }
+}
+
+// ===== Event Handlers =====
+document.getElementById('solveBtn').addEventListener('click', () => {
+    solveSudoku();
+});
+
+document.getElementById('stepBtn').addEventListener('click', () => {
+    if (state.candidates[0] === null || state.candidates[0].length === 0) {
+        initializeCandidates();
+    }
+    solveStep();
+    renderGrid();
+});
+
+document.getElementById('showCandidatesBtn').addEventListener('click', () => {
+    state.showCandidates = !state.showCandidates;
+    if (state.showCandidates) {
+        initializeCandidates();
+        eliminateCandidates();
+    }
+    renderGrid();
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    state.grid = Array(81).fill(null);
+    state.initial = Array(81).fill(false);
+    state.candidates = Array(81).fill(null).map(() => [1,2,3,4,5,6,7,8,9]);
+    clearLog();
+    log('クリア完了', 'info', '新しい問題を入力してください');
+    renderGrid();
+});
+
+document.getElementById('exampleBtn').addEventListener('click', () => {
+    // Easy example puzzle
+    const example = [
+        5,3,null,null,7,null,null,null,null,
+        6,null,null,1,9,5,null,null,null,
+        null,9,8,null,null,null,null,6,null,
+        8,null,null,null,6,null,null,null,3,
+        4,null,null,8,null,3,null,null,1,
+        7,null,null,null,2,null,null,null,6,
+        null,6,null,null,null,null,2,8,null,
+        null,null,null,4,1,9,null,null,5,
+        null,null,null,null,8,null,null,7,9
+    ];
+    
+    state.grid = [...example];
+    state.initial = example.map(v => v !== null);
+    state.candidates = Array(81).fill(null).map(() => [1,2,3,4,5,6,7,8,9]);
+    clearLog();
+    log('例題を読み込みました', 'success', '「Solve」をクリックしてください');
+    renderGrid();
+});
+
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+}
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+});
+
+// Initialize
+renderGrid();
+</script>
+
+</body>
+</html>
