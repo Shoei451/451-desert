@@ -127,6 +127,7 @@ function updateSyncStatus(status) {
 const { data: { session } } = await supabase.auth.getSession()
 if (!session) {
   window.location.replace('index.html')
+  throw new Error('Not authenticated') // Stop execution
 } else {
   state.user = session.user
   $('#userEmail').textContent = session.user.email
@@ -138,7 +139,7 @@ if (!session) {
 }
 
 supabase.auth.onAuthStateChange((event, session) => {
-  if (!session) {
+  if (event === 'SIGNED_OUT') {
     window.location.replace('index.html')
   }
 })
@@ -146,7 +147,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 $('#logoutBtn').onclick = async () => {
   if (confirm('ログアウトしますか？')) {
     await supabase.auth.signOut()
-    window.location.replace('index.html')
+    // Navigation will be handled by onAuthStateChange
   }
 }
 
