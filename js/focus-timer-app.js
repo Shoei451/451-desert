@@ -1,11 +1,10 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { supabase, session } from './auth-check.js'
 
 // =====================================
-// Supabase Configuration
+// Auth Check Complete
 // =====================================
-const SUPABASE_URL = 'https://abfuanjincelcyrlswsp.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiZnVhbmppbmNlbGN5cmxzd3NwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4NjE4MDIsImV4cCI6MjA4MzQzNzgwMn0.OD7371E7A1ZRiqF6SGXnp2JSzPowg2zTt-V36GQ7x9A'
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+// Authentication has been verified by auth-check.js
+// Session is guaranteed to exist at this point
 
 // =====================================
 // State Management
@@ -122,23 +121,24 @@ function updateSyncStatus(status) {
 }
 
 // =====================================
-// Auth Management
+// Initialize App After Auth Check
 // =====================================
-const { data: { session } } = await supabase.auth.getSession()
-if (!session) {
-  window.location.replace('index.html')
-  throw new Error('Not authenticated') // Stop execution
-} else {
-  state.user = session.user
-  $('#userEmail').textContent = session.user.email
-  await loadCategories()
-  await loadSessions()
-  await loadSettings()
-  render()
-  updateSyncStatus('synced')
-}
+// We've already checked authentication at the top of the file
+// Now initialize the app with the session we know exists
+state.user = session.user
+$('#userEmail').textContent = session.user.email
 
-supabase.auth.onAuthStateChange((event, session) => {
+// Load data
+await loadCategories()
+await loadSessions()
+await loadSettings()
+
+// Render UI
+render()
+updateSyncStatus('synced')
+
+// Listen for sign-out events
+supabase.auth.onAuthStateChange((event, newSession) => {
   if (event === 'SIGNED_OUT') {
     window.location.replace('index.html')
   }
