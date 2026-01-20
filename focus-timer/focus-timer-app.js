@@ -167,7 +167,14 @@ async function loadCategories() {
     if (!data || data.length === 0) {
       // Initialize with default categories
       for (const cat of DEFAULT_CATEGORIES) {
-        await saveCategory({ ...cat, id: uid() })
+        try {
+          await saveCategory({ ...cat, id: uid() })
+        } catch (catError) {
+          // Ignore duplicate errors - category may already exist
+          if (!catError.message?.includes('duplicate key')) {
+            console.error('Error creating default category:', catError)
+          }
+        }
       }
       await loadCategories()
       return
@@ -189,9 +196,13 @@ async function saveCategory(category) {
       user_id: state.user.id
     }
 
+    // Use upsert with onConflict to handle duplicates
     const { error } = await supabase
       .from('focus_categories')
-      .upsert(categoryData)
+      .upsert(categoryData, { 
+        onConflict: 'id',
+        ignoreDuplicates: false 
+      })
 
     if (error) throw error
 
@@ -743,9 +754,21 @@ $('#categoryForm').onsubmit = async (e) => {
   e.preventDefault()
   
   const id = $('#categoryId').value || uid()
+  const name = $('#categoryName').value.trim()
+  
+  // Check if category name already exists (excluding current category being edited)
+  const existingCategory = state.categories.find(c => 
+    c.name.toLowerCase() === name.toLowerCase() && c.id !== id
+  )
+  
+  if (existingCategory) {
+    alert(`カテゴリー "${name}" はすでに存在します。別の名前を使用してください。`)
+    return
+  }
+  
   const category = {
     id,
-    name: $('#categoryName').value.trim(),
+    name,
     icon: $('#categoryIcon').value.trim(),
     color: $('#categoryColor').value
   }
@@ -755,7 +778,12 @@ $('#categoryForm').onsubmit = async (e) => {
     categoryModal.close()
     render()
   } catch (error) {
-    alert('Failed to save category: ' + error.message)
+    console.error('Save error:', error)
+    if (error.message?.includes('duplicate key')) {
+      alert('このカテゴリー名はすでに使用されています。別の名前を選んでください。')
+    } else {
+      alert('カテゴリーの保存に失敗しました: ' + error.message)
+    }
   }
 }
 
