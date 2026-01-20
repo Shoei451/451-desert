@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="images/favicon-solar.png" />
+  <title>Focus Timer — 451-Solarized</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="solar-focus-style.css" />
+</head>
+
+<body>
+  <div class="app" id="mainApp">
+    <!-- Header with auth controls -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">⏱️</div>
+        <h1 class="app-title">Focus</h1>
+      </div>
+      
+      <div class="header-right">
+        <div class="user-info">
+          <span id="userEmail"></span>
+        </div>
+        <div class="sync-status" id="syncStatus">
+          <span class="loading-spinner"></span>
+          <span>同期中...</span>
+        </div>
+        <button id="theme-toggle" title="Toggle Theme">
+          <svg id="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button id="logoutBtn" class="btn-secondary">Log out</button>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="timer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Timer</span>
+      </button>
+      <button class="tab-btn" data-tab="analysis">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Analysis</span>
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m-2 2l-4.2 4.2m14.2-1.2l-6-6m-6 6l-6-6"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Tab Content: Timer -->
+    <div class="tab-content active" id="timer-tab">
+      <div class="timer-container">
+        <!-- Activity Selector -->
+        <div class="activity-selector">
+          <select id="activitySelect" class="activity-select">
+            <option value="Study">📚 Study</option>
+            <option value="Coding">💻 Coding</option>
+            <option value="Rest">🌸 Rest</option>
+          </select>
+        </div>
+
+        <!-- Circular Progress Timer -->
+        <div class="timer-circle-wrapper">
+          <svg class="timer-svg" viewBox="0 0 300 300">
+            <defs>
+              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:var(--violet);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:var(--magenta);stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <!-- Background circle -->
+            <circle cx="150" cy="150" r="130" fill="none" stroke="var(--base1)" stroke-width="20" opacity="0.2"/>
+            <!-- Progress circle -->
+            <circle id="progressCircle" cx="150" cy="150" r="130" fill="none" 
+                    stroke="url(#progressGradient)" stroke-width="20" 
+                    stroke-linecap="round"
+                    stroke-dasharray="817" 
+                    stroke-dashoffset="817"
+                    transform="rotate(-90 150 150)"/>
+          </svg>
+          
+          <!-- Icon in center -->
+          <div class="timer-icon" id="timerIcon">📚</div>
+          
+          <!-- Time display -->
+          <div class="timer-display">
+            <div class="time-value" id="timeDisplay">25:00</div>
+            <div class="time-label" id="sessionLabel">Focus on one task</div>
+          </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="timer-controls">
+          <button class="btn-control btn-primary" id="startBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span>Start</span>
+          </button>
+          <button class="btn-control btn-secondary" id="pauseBtn" style="display:none">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            </svg>
+            <span>Pause</span>
+          </button>
+          <button class="btn-control btn-ghost" id="resetBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 4v6h6M23 20v-6h-6"/>
+              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+            </svg>
+            <span>Reset</span>
+          </button>
+        </div>
+
+        <!-- Quick Duration Buttons -->
+        <div class="quick-durations">
+          <button class="duration-btn" data-minutes="15">15m</button>
+          <button class="duration-btn active" data-minutes="25">25m</button>
+          <button class="duration-btn" data-minutes="45">45m</button>
+          <button class="duration-btn" data-minutes="60">60m</button>
+        </div>
+
+        <!-- Today's Progress -->
+        <div class="today-summary">
+          <h3>Today's Progress</h3>
+          <div class="summary-stats">
+            <div class="stat-card">
+              <div class="stat-value" id="todaySessions">0</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="todayTime">0h 0m</div>
+              <div class="stat-label">Total Time</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="todayStreak">0</div>
+              <div class="stat-label">Day Streak</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Content: Analysis -->
+    <div class="tab-content" id="analysis-tab">
+      <div class="analysis-container">
+        <h2 class="section-title">Focus Analysis</h2>
+        
+        <!-- Time Range Selector -->
+        <div class="range-selector">
+          <button class="range-btn active" data-range="daily">Daily</button>
+          <button class="range-btn" data-range="weekly">Weekly</button>
+          <button class="range-btn" data-range="monthly">Monthly</button>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-info">
+              <div class="stat-big" id="totalTime">0h 0m</div>
+              <div class="stat-desc">Total Focus Time</div>
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+              <div class="stat-big" id="totalSessions">0</div>
+              <div class="stat-desc">Total Sessions</div>
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-info">
+              <div class="stat-big" id="avgSession">0m</div>
+              <div class="stat-desc">Avg Session</div>
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-info">
+              <div class="stat-big" id="currentStreak">0</div>
+              <div class="stat-desc">Current Streak</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Breakdown (Pie Chart) -->
+        <div class="chart-section">
+          <h3>Time by Category</h3>
+          <div class="pie-chart-container">
+            <svg id="pieChart" viewBox="0 0 200 200"></svg>
+            <div class="pie-legend" id="pieLegend"></div>
+          </div>
+        </div>
+
+        <!-- Recent Sessions -->
+        <div class="sessions-section">
+          <h3>Recent Sessions</h3>
+          <div class="sessions-list" id="sessionsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Content: Settings -->
+    <div class="tab-content" id="settings-tab">
+      <div class="settings-container">
+        <h2 class="section-title">Settings</h2>
+
+        <!-- Category Management -->
+        <div class="settings-section">
+          <h3>Activity Categories</h3>
+          <p class="section-desc">Customize your focus categories and icons</p>
+          
+          <div class="categories-list" id="categoriesList"></div>
+          
+          <button class="btn-add" id="addCategoryBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Category</span>
+          </button>
+        </div>
+
+        <!-- Timer Preferences -->
+        <div class="settings-section">
+          <h3>Timer Preferences</h3>
+          
+          <div class="setting-item">
+            <label for="autoStartBreak">Auto-start breaks</label>
+            <input type="checkbox" id="autoStartBreak" class="toggle-switch">
+          </div>
+          
+          <div class="setting-item">
+            <label for="soundEnabled">Sound notifications</label>
+            <input type="checkbox" id="soundEnabled" class="toggle-switch" checked>
+          </div>
+          
+          <div class="setting-item">
+            <label for="breakDuration">Break duration (minutes)</label>
+            <input type="number" id="breakDuration" value="5" min="1" max="30" class="number-input">
+          </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="settings-section">
+          <h3>Data Management</h3>
+          
+          <div class="data-actions">
+            <button class="btn-action" id="exportDataBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export Data</span>
+            </button>
+            
+            <label class="btn-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Import Data</span>
+              <input type="file" id="importDataFile" accept="application/json" hidden>
+            </label>
+            
+            <button class="btn-action btn-danger" id="clearDataBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              <span>Clear All Data</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <dialog id="categoryModal" class="modal">
+    <form method="dialog" id="categoryForm" class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Category</h3>
+        <button type="button" class="modal-close" onclick="categoryModal.close()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <input type="hidden" id="categoryId">
+        
+        <div class="form-group">
+          <label for="categoryName">Category Name</label>
+          <input type="text" id="categoryName" required placeholder="e.g., Study, Coding, Exercise">
+        </div>
+        
+        <div class="form-group">
+          <label for="categoryIcon">Icon (emoji)</label>
+          <input type="text" id="categoryIcon" required placeholder="📚" maxlength="2">
+          <div class="icon-suggestions">
+            <button type="button" class="icon-btn-small" data-icon="📚">📚</button>
+            <button type="button" class="icon-btn-small" data-icon="💻">💻</button>
+            <button type="button" class="icon-btn-small" data-icon="🎨">🎨</button>
+            <button type="button" class="icon-btn-small" data-icon="🎵">🎵</button>
+            <button type="button" class="icon-btn-small" data-icon="🏃">🏃</button>
+            <button type="button" class="icon-btn-small" data-icon="🌸">🌸</button>
+            <button type="button" class="icon-btn-small" data-icon="🎯">🎯</button>
+            <button type="button" class="icon-btn-small" data-icon="✍️">✍️</button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="categoryColor">Color</label>
+          <div class="color-picker">
+            <input type="color" id="categoryColor" value="#268bd2">
+            <div class="color-suggestions">
+              <button type="button" class="color-btn" data-color="#268bd2" style="background:#268bd2"></button>
+              <button type="button" class="color-btn" data-color="#2aa198" style="background:#2aa198"></button>
+              <button type="button" class="color-btn" data-color="#859900" style="background:#859900"></button>
+              <button type="button" class="color-btn" data-color="#b58900" style="background:#b58900"></button>
+              <button type="button" class="color-btn" data-color="#cb4b16" style="background:#cb4b16"></button>
+              <button type="button" class="color-btn" data-color="#dc322f" style="background:#dc322f"></button>
+              <button type="button" class="color-btn" data-color="#d33682" style="background:#d33682"></button>
+              <button type="button" class="color-btn" data-color="#6c71c4" style="background:#6c71c4"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="categoryModal.close()">Cancel</button>
+        <button type="button" id="deleteCategoryBtn" class="btn-danger" style="display:none">Delete</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="focus-timer-app.js"></script>
+</body>
+</html>
